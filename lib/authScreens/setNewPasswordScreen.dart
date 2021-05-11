@@ -55,6 +55,8 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
 
   void _save(provider) async {
     final formData = _formKey.currentState;
+    formData.save();
+    print(_password);
     if (formData.validate()) {
       formData.save();
       try {
@@ -169,7 +171,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: ChangeNotifierProvider(
-        builder: (_) => Auth(),
+        create: (_) => Auth(),
         child: Consumer<Auth>(
           builder: (_, provider, child) => Scaffold(
             body: Container(

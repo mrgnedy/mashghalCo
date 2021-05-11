@@ -19,7 +19,7 @@ class CategoryItem extends StatelessWidget {
         image: DecorationImage(
           image: isOffer == 'yes'
               ? AssetImage('assets/images/offer.jpg')
-              : NetworkImage('https://mashghllkw.com/cdn/' + image),
+              : NetworkImage('https://mashghllkw.com/cdn/$image'),
           fit: BoxFit.cover,
         ),
       ),

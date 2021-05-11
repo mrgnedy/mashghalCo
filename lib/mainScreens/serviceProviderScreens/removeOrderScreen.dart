@@ -105,7 +105,7 @@ class RemovingOrderScreen extends StatelessWidget {
                           itemCount: services.length,
                           itemBuilder: (context, index) {
                             return ChangeNotifierProvider(
-                              builder: (context) => services[index],
+                              create: (context) => services[index],
                               child: OrderRequest(),
                             );
                           },

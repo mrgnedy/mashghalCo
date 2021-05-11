@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mashghal_co/models/notificationsModel.dart';
 import 'package:mashghal_co/widgets/loader.dart';
 import '../widgets/notificationCardFromNotificationScreen.dart';
 import '../providers/notificationProvider.dart';
@@ -88,10 +89,9 @@ class NotificationsScreen extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         return NotificationCard(
                                           id: notification.notifications[index].id,
-                                          title: notification.notifications[index].notification.title,
+                                          title: notification.notifications[index].title,
                                           content: notification
-                                              .notifications[index].notification
-                                              .content,
+                                              .notifications[index].body,
                                         );
                                       },
                                     ),

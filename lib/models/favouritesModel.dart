@@ -32,6 +32,7 @@ class Advertisers {
   int userId;
   int advertiserId;
   int advertId;
+  int status;
   String createdAt;
   String updatedAt;
   Advertiser advertiser;
@@ -43,10 +44,12 @@ class Advertisers {
         this.advertId,
         this.createdAt,
         this.updatedAt,
+        this.status,
         this.advertiser});
 
   Advertisers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    status= json['status'];
     userId = json['user_id'];
     advertiserId = json['advertiser_id'];
     advertId = json['advert_id'];

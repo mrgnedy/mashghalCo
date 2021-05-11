@@ -12,10 +12,10 @@ class Notifications with ChangeNotifier {
 
   List closers = [];
   ClosersModel _closersModel;
-  List notifications = [];
-  NotificationsModel _notificationsModel;
+  List<Notifs> notifications = [];
+  NotificationModel _notificationsModel;
 
-  NotificationsModel get notificationsModel {
+  NotificationModel get notificationsModel {
     return _notificationsModel;
   }
 
@@ -37,7 +37,7 @@ class Notifications with ChangeNotifier {
       });
       final responseData = json.decode(response.body);
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        _notificationsModel = NotificationsModel.fromJson(responseData);
+        _notificationsModel = NotificationModel.fromJson(responseData);
         notifications = _notificationsModel.data;
         notifyListeners();
         return _notificationsModel;

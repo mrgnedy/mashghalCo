@@ -35,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void didChangeDependencies() {
-    Timer(Duration(seconds: 2), _listen);
+    Timer(Duration(seconds: 3), _listen);
     super.didChangeDependencies();
   }
 
@@ -61,12 +61,17 @@ class _ChatScreenState extends State<ChatScreen> {
     _messages = [];
     final messages = Provider.of<MessagesProvider>(context).messages;
     for (var message in messages) {
+      
       final newMessage = MessageViewer(
         type: message.receiverId != widget.receiverId ? 'else' : 'me',
         content: message.message == null ? ' ' : message.message,
         date: message.msgDate,
       );
+      if(message.message != null && message.message !=' ' )
       _messages.add(newMessage);
+      else
+      _messages.add(Container(height: 0,));
+
     }
   }
 
@@ -82,6 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
   //---------------------------------build--------------------------------------
   @override
   Widget build(BuildContext context) {
+    print('IN BUILD');
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -156,36 +162,36 @@ class _ChatScreenState extends State<ChatScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Spacer(),
-                      GestureDetector(
-                        onTap: _openCamera,
-                        child: Icon(
-                          Icons.camera_enhance,
-                          color: Colors.grey[400],
-                          size: 24,
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: _openGallery,
-                        child: Image.asset(
-                          'assets/icons/image.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => GoogleMaps(),
-                            ),
-                          );
-                        },
-                        child: Image.asset(
-                          'assets/icons/pin.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: _openCamera,
+                      //   child: Icon(
+                      //     Icons.camera_enhance,
+                      //     color: Colors.grey[400],
+                      //     size: 24,
+                      //   ),
+                      // ),
+                      // Spacer(),
+                      // GestureDetector(
+                      //   onTap: _openGallery,
+                      //   child: Image.asset(
+                      //     'assets/icons/image.png',
+                      //     fit: BoxFit.cover,
+                      //   ),
+                      // ),
+                      // Spacer(),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.of(context).push(
+                      //       MaterialPageRoute(
+                      //         builder: (context) => GoogleMaps(),
+                      //       ),
+                      //     );
+                      //   },
+                      //   child: Image.asset(
+                      //     'assets/icons/pin.png',
+                      //     fit: BoxFit.cover,
+                      //   ),
+                      // ),
                       Spacer(),
                       Form(
                         key: _formKey,
@@ -231,7 +237,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           horizontal: 5.0,
                         ),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () { 
                             messageController.clear();
                             _send();
                           },

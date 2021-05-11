@@ -48,7 +48,7 @@ class _MoreScreenState extends State<MoreScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<UserData>(
-          builder: (context) => UserData(),
+          create: (context) => UserData(),
           child: AccountScreen(),
         ),
       ),
@@ -59,7 +59,7 @@ class _MoreScreenState extends State<MoreScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<Advertiser>(
-          builder: (context) => Advertiser(),
+          create: (context) => Advertiser(),
           child: ServiceProviderAccountScreen(),
         ),
       ),
@@ -142,7 +142,7 @@ class _MoreScreenState extends State<MoreScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: ChangeNotifierProvider(
-        builder: (_) => Auth(),
+        create: (_) => Auth(),
         child: Consumer<Auth>(
           builder: (_, provider, child) => Scaffold(
             backgroundColor: Colors.white,

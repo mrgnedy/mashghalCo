@@ -16,6 +16,7 @@ class CoiffeurDetailsModel {
 
 class Data with ChangeNotifier {
   String advertiserName;
+  String address;
   String advertiserImage;
   int fav;
   int favId;
@@ -25,6 +26,7 @@ class Data with ChangeNotifier {
 
   Data(
       {this.advertiserName,
+      this.address,
       this.advertiserImage,
       this.fav,
       this.favId,
@@ -33,6 +35,7 @@ class Data with ChangeNotifier {
       this.works});
 
   Data.fromJson(Map<String, dynamic> json) {
+    address = json['address'];
     advertiserName = json['advertiser_name'];
     advertiserImage =
         json['advertiser_image'] == null ? '' : json['advertiser_image'];
@@ -93,6 +96,8 @@ class Details with ChangeNotifier {
   int status;
   String offer;
   String availableTime;
+  String startDate;
+  String endDate;
   int hours;
   double rate;
   String createdAt;
@@ -106,6 +111,8 @@ class Details with ChangeNotifier {
       this.desc,
       this.price,
       this.type,
+      this.startDate,
+      this.endDate,
       this.status,
       this.offer,
       this.availableTime,
@@ -119,7 +126,8 @@ class Details with ChangeNotifier {
     userId = int.tryParse(json['user_id'].toString());
     serviceId = json['service_id'];
     adId = json['ad_id'] == null ? 0 : int.tryParse(json['ad_id'].toString());
-
+    startDate = json['start_date'];
+    endDate = json['end_date'];
     desc = json['desc'];
     price = json['price'];
     type = json['type'];

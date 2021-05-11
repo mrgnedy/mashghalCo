@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 import '../mainScreens/chatScreen.dart';
 import '../mainScreens/offerScreenFromDetails.dart';
 import '../providers/reservationsProvider.dart';
@@ -63,12 +65,7 @@ class _OfferReviewScreenState extends State<OfferReviewScreen> {
             ),
           ),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.share,
-                  color: Color.fromRGBO(104, 57, 120, 10),
-                ),
-                onPressed: _share),
+           
           ],
           leading: IconButton(
               icon: Icon(
@@ -104,11 +101,7 @@ class _OfferReviewScreenState extends State<OfferReviewScreen> {
                 );
               } else {
                 _isFav =
-                    Provider
-                        .of<Reservations>(context)
-                        .coiffeurDetails
-                        .data
-                        .fav;
+                    Provider.of<Reservations>(context).coiffeurDetails.data.fav;
                 return Consumer<Reservations>(
                   builder: (context, detail, child) => Column(
                     children: <Widget>[
@@ -136,17 +129,50 @@ class _OfferReviewScreenState extends State<OfferReviewScreen> {
                                     detail.coiffeurDetails.data.advertiserImage,
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Text(
-                                detail.coiffeurDetails.data.advertiserName,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: 'beINNormal',
-                                  fontSize: 18.0,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: Text(
+                                    detail.coiffeurDetails.data.advertiserName,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: 'beINNormal',
+                                      fontSize: 18.0,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                GestureDetector(
+                                  onLongPress: () {
+                                    Clipboard.setData(ClipboardData(
+                                        text:
+                                            '${detail.coiffeurDetails.data.address}'));
+                                    HapticFeedback.vibrate();
+                                    Toast.show('تم المسخ', context);
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .50,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0),
+                                      child: Text(
+                                        '${detail.coiffeurDetails.data.address}',
+                                        maxLines: 4,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          height: 1.4,
+                                          color: Colors.grey,
+                                          fontFamily: 'beINNormal',
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             Spacer(),
                             Column(
@@ -192,12 +218,12 @@ class _OfferReviewScreenState extends State<OfferReviewScreen> {
                                   vertical: 10.0,
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.60,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.60,
                                       height: 40,
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(

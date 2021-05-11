@@ -36,6 +36,8 @@ class Service with ChangeNotifier {
   int adId;
   String desc;
   String price;
+  String startDate;
+  String endDate;
   String type;
   int status;
   String offer;
@@ -61,6 +63,8 @@ class Service with ChangeNotifier {
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    startDate = json['start_date'];
+    endDate = json['end_date'];
     userId = json['user_id'];
     serviceId = json['service_id'];
     adId = json['ad_id'] == null ? 0 : json['ad_id'];

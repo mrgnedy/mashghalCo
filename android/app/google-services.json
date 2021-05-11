@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "29948090284",
+    "firebase_url": "https://mashghalco.firebaseio.com",
+    "project_id": "mashghalco",
+    "storage_bucket": "mashghalco.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29948090284:android:52ede7e8fcd4950b9d8c09",
+        "android_client_info": {
+          "package_name": "com.abdo.mashghal_co"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29948090284-aier2eb17nrp3mqjr54mfq8qi9g63li6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk1CfxcZM3DtX57Rqc4GsZSltnQutklxY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29948090284-aier2eb17nrp3mqjr54mfq8qi9g63li6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

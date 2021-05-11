@@ -38,9 +38,11 @@ class _ForgivePasswordScreenState extends State<ForgivePasswordScreen> {
   }
 
   void _login(provider) async {
+    print('start');
     final formData = _formKey.currentState;
     if (formData.validate()) {
       formData.save();
+      print('validated');
       setState(() {
         _isLoading = true;
       });
@@ -153,7 +155,7 @@ class _ForgivePasswordScreenState extends State<ForgivePasswordScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: ChangeNotifierProvider(
-        builder: (_) => Auth(),
+        create: (_) => Auth(),
         child: Consumer<Auth>(
           builder: (_, provider, child) => Scaffold(
             body: Container(
@@ -189,6 +191,7 @@ class _ForgivePasswordScreenState extends State<ForgivePasswordScreen> {
                     TextFormFieldWidget(
                       labelText: 'الرجاء ادخال رقم الجوال',
                       isPassword: false,
+                      isPhone: true,
                       onSaved: _onSavedFirstForm,
                       validator: _firstValidator,
                     ),

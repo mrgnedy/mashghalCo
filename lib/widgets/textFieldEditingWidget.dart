@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class TextFieldEditingWidget extends StatefulWidget {
   final String labelText;
   final String initialValue;
+  final bool isNumber;
   final FormFieldSetter<String> onSaved;
   final FormFieldValidator<String> validator;
 
   const TextFieldEditingWidget({
+    this.isNumber = false,
     this.labelText,
     this.initialValue,
     this.onSaved,
@@ -28,6 +30,7 @@ class _TextFieldEditingWidgetState extends State<TextFieldEditingWidget> {
       child: Column(
         children: <Widget>[
           TextFormField(
+            keyboardType: widget.isNumber? TextInputType.number : TextInputType.text,
             style: TextStyle(
               color: Color.fromRGBO(104, 57, 120, 10),
               fontSize: 14.0,

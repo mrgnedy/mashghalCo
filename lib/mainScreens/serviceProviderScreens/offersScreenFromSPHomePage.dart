@@ -67,7 +67,7 @@ class OffersScreenFromSPHomePage extends StatelessWidget {
                                         services.advertiserOffers.data.services
                                             .length
                                     ? ChangeNotifierProvider(
-                                        builder: (context) => services
+                                        create: (context) => services
                                             .advertiserOffers
                                             .data
                                             .services[index],

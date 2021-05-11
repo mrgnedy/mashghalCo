@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mashghal_co/providers/Auth.dart';
 import 'package:provider/provider.dart';
 import '../models/orderModel.dart';
 
 class OrderRequest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print(Provider.of<Auth>(context).token);
     final service = Provider.of<Services>(context).userService;
+    final day = Provider.of<Services>(context).day;
+    final hours = Provider.of<Services>(context).hours;
     return Container(
       width: double.infinity,
       child: Column(
@@ -67,7 +71,7 @@ class OrderRequest extends StatelessWidget {
                 width: 10.0,
               ),
               Text(
-                service.createdAt.split(' ')[0],
+                '${day}day',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 18.0,
@@ -89,7 +93,7 @@ class OrderRequest extends StatelessWidget {
                 width: 10.0,
               ),
               Text(
-                service.createdAt.split(' ')[1],
+                '${hours}:00',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 18.0,

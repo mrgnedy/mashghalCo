@@ -11,14 +11,16 @@ class FinishingOrderScreen extends StatelessWidget {
   final int id;
   final String userImage;
 
-  FinishingOrderScreen({this.userImage, this.id,this.services});
+  FinishingOrderScreen({this.userImage, this.id, this.services});
 
   //-------------------------------methods--------------------------------------
   Future<void> _finish(BuildContext context) async {
-    await Provider.of<OrdersProvider>(context).updateStatusToFinished(id);
-    Navigator.of(context).pop();
-    await Provider.of<OrdersProvider>(context, listen: false)
-        .fetchAdvertiserInitOrders(DateTime.now());
+    await Provider.of<OrdersProvider>(context)
+        .updateStatusToFinished(id)
+        .then((_) => Navigator.of(context).pop());
+
+    // await Provider.of<OrdersProvider>(context, listen: false)
+    //     .fetchAdvertiserInitOrders(DateTime.now());
   }
 
   //----------------------------------------------------------------------------
@@ -45,7 +47,7 @@ class FinishingOrderScreen extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                 Provider.of<OrdersProvider>(context, listen: false)
+                Provider.of<OrdersProvider>(context, listen: false)
                     .fetchAdvertiserInitOrders(DateTime.now());
               }),
         ),
@@ -105,7 +107,7 @@ class FinishingOrderScreen extends StatelessWidget {
                           itemCount: services.length,
                           itemBuilder: (context, index) {
                             return ChangeNotifierProvider(
-                              builder: (context) => services[index],
+                              create: (context) => services[index],
                               child: OrderRequest(),
                             );
                           },

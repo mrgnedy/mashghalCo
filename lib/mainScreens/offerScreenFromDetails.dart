@@ -7,6 +7,8 @@ import '../mainScreens/dateandtimeScreen.dart';
 import '../providers/reservationsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import '../widgets/showErrorDialogue.dart';
+import 'package:mashghal_co/widgets/loader.dart';
 
 class OfferScreenFromDetails extends StatefulWidget {
   // variable to ref screen name to routes in main.dart and Navigation
@@ -38,6 +40,7 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
     SharedPreferences.getInstance().then((p) {
       widget.isAuth = p.getBool('isAuth');
     });
+    total = 0;
     Provider.of<Reservations>(context, listen: false).order.clear();
     Provider.of<Reservations>(context, listen: false).ordersId.clear();
     super.initState();
@@ -78,6 +81,7 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                         child: Column(
                           children: <Widget>[
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -91,7 +95,15 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                // Spacer(),
+                              provider.coiffeurDetails.data.offers[outerIndex].details.first.endDate==null?Container():  Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    '${provider.coiffeurDetails.data.offers[outerIndex].details.first.endDate} هذا العرض سارى حتى ',
+                                    textDirection: TextDirection.ltr,
+                                    style: TextStyle(fontFamily: 'beinnormal'),
+                                  ),
+                                ),
                               ],
                             ),
                             Container(
@@ -205,19 +217,83 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                                     ),
                                     trailing: GestureDetector(
                                       onTap: () {
-                                        provider.order.add(provider
-                                            .coiffeurDetails
-                                            .data
-                                            .offers[outerIndex]
-                                            .details[index]);
-                                        provider.ordersId.add(ServicesIds(
-                                          serviceId: provider
-                                              .coiffeurDetails
-                                              .data
-                                              .services[outerIndex]
-                                              .details[index]
-                                              .id,
-                                        ));
+                                        print(
+                                            '${provider.coiffeurDetails.data.offers[outerIndex].details.last.serviceId}');
+                                        if (Provider.of<Reservations>(context)
+                                            .order
+                                            .where((serv) =>
+                                                serv.serviceId ==
+                                                provider
+                                                    .coiffeurDetails
+                                                    .data
+                                                    .offers[outerIndex]
+                                                    .serviceId)
+                                            .isNotEmpty) {
+                                          print('CONTAINED');
+                                          Provider.of<Reservations>(context)
+                                              .ordersId
+                                              .removeAt(Provider.of<
+                                                      Reservations>(context)
+                                                  .ordersId
+                                                  .indexOf(
+                                                      Provider.of<Reservations>(
+                                                              context)
+                                                          .ordersId
+                                                          .singleWhere((serv) {
+                                                    return serv.serviceId ==
+                                                        provider
+                                                            .coiffeurDetails
+                                                            .data
+                                                            .offers[outerIndex]
+                                                            .details[index]
+                                                            .id;
+                                                  })));
+                                          Provider.of<Reservations>(context)
+                                              .order
+                                              .removeAt(Provider.of<
+                                                      Reservations>(context)
+                                                  .order
+                                                  .indexOf(
+                                                      Provider.of<Reservations>(
+                                                              context)
+                                                          .order
+                                                          .firstWhere((serv) {
+                                                    return serv.serviceId ==
+                                                        provider
+                                                            .coiffeurDetails
+                                                            .data
+                                                            .offers[outerIndex]
+                                                            .serviceId;
+                                                  })));
+                                          setState(() {
+                                            total = total -
+                                                int.parse(provider
+                                                    .coiffeurDetails
+                                                    .data
+                                                    .offers[outerIndex]
+                                                    .details[index]
+                                                    .offer
+                                                    .toArabic());
+                                          });
+                                          return;
+                                        }
+                                        Provider.of<Reservations>(context)
+                                            .order
+                                            .add(provider
+                                                .coiffeurDetails
+                                                .data
+                                                .offers[outerIndex]
+                                                .details[index]);
+                                        Provider.of<Reservations>(context)
+                                            .ordersId
+                                            .add(ServicesIds(
+                                              serviceId: provider
+                                                  .coiffeurDetails
+                                                  .data
+                                                  .offers[outerIndex]
+                                                  .details[index]
+                                                  .id,
+                                            ));
                                         setState(() {
                                           total = total +
                                               int.parse(provider
@@ -225,7 +301,8 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                                                   .data
                                                   .offers[outerIndex]
                                                   .details[index]
-                                                  .offer);
+                                                  .offer
+                                                  .toArabic());
                                         });
                                         Scaffold.of(context)
                                             .hideCurrentSnackBar();
@@ -257,7 +334,7 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                                         ));
                                       },
                                       child: Container(
-                                        height: 20.0,
+                                        height: 30.0,
                                         width: 50.0,
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 9.0, horizontal: 5.0),
@@ -270,7 +347,20 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                                         child: Center(
                                           child: FittedBox(
                                             child: Text(
-                                              'اختيار',
+                                              Provider.of<Reservations>(context)
+                                                      .ordersId
+                                                      .where((serv) =>
+                                                          serv.serviceId ==
+                                                          provider
+                                                              .coiffeurDetails
+                                                              .data
+                                                              .offers[
+                                                                  outerIndex]
+                                                              .details[index]
+                                                              .id)
+                                                      .isNotEmpty
+                                                  ? 'حذف'
+                                                  : 'اختيار',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: 'beINNormal',
@@ -292,19 +382,26 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    if (widget.isAuth)
-                      _reserve(context, provider);
-                    else
-                      showDialog(
-                          context: context,
-                          builder: (context) => GeneralDialog(
-                              content: 'يرجي تسجيل الدخول',
-                              toDOFunction: () =>
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    ServiceSelectionScreen.routeName,
-                                    (Route<dynamic> route) => false,
-                                  )));
+                    if (provider.order.isEmpty) {
+                      _showErrorDialog('يرجي اختيار خدمة');
+                      return;
+                    }
+
+                    {
+                      if (widget.isAuth)
+                        _reserve(context, provider);
+                      else
+                        showDialog(
+                            context: context,
+                            builder: (context) => GeneralDialog(
+                                content: 'يرجي تسجيل الدخول',
+                                toDOFunction: () =>
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      ServiceSelectionScreen.routeName,
+                                      (Route<dynamic> route) => false,
+                                    )));
+                    }
                   },
                   child: Container(
                     height: 30,
@@ -330,6 +427,15 @@ class _OfferScreenFromDetailsState extends State<OfferScreenFromDetails> {
                 ),
               ],
             ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => ShowErrorDialoge(
+        message: "يرجي اختيار خدمة",
+      ),
     );
   }
 }

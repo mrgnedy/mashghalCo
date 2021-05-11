@@ -23,16 +23,22 @@ class ServiceModel {
 
 class ServicesIds {
   int serviceId;
+  String day;
+  String hours;
 
-  ServicesIds({this.serviceId});
+  ServicesIds({this.day, this.hours, this.serviceId});
 
   ServicesIds.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];
+    day = json['day'];
+    hours = json['hours'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['service_id'] = this.serviceId;
+    data['day'] = this.day;
+    data['hours'] = this.hours;
     return data;
   }
 }

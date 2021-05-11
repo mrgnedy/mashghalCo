@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mashghal_co/authScreens/serviceProviderSignUpScreen.dart';
 import 'package:mashghal_co/widgets/appLogo.dart';
+import 'package:mashghal_co/widgets/generalAlertDialog.dart';
 import '../models/daysModel.dart';
 import 'package:xlive_switch/xlive_switch.dart';
 
@@ -12,49 +13,69 @@ class DaysSelectionScreen extends StatefulWidget {
 class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
   //----------------------------variables---------------------------------------
   List<Days> daysList = [
-    Days(day: 'sat', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'sun', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'Mon', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'Tue', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'wed', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'Thu', endTime: 11, startTime: 9, status: 0),
-    Days(day: 'Fri', endTime: 11, startTime: 9, status: 0),
+    Days(day: 'sat', endTime: null, startTime: null, status: 0),
+    Days(day: 'sun', endTime: null, startTime: null, status: 0),
+    Days(day: 'Mon', endTime: null, startTime: null, status: 0),
+    Days(day: 'Tue', endTime: null, startTime: null, status: 0),
+    Days(day: 'wed', endTime: null, startTime: null, status: 0),
+    Days(day: 'Thu', endTime: null, startTime: null, status: 0),
+    Days(day: 'Fri', endTime: null, startTime: null, status: 0),
+  ];
+  List<bool> switchFlag;
+  List<String> daysNames = [
+    'السبت',
+    "الأحد",
+    "الاثنين",
+    "الثلاثاء",
+    "الأربعاء",
+    "الخميس",
+    "الجمعة"
   ];
 
   //-----------------------------methods----------------------------------------
   void _continue() {
+    final actualList =   daysList.where((day) => day.status == 1).toList();
+    final nullList = actualList.where((day)=>day.endTime == null || day.startTime==null || day.endTime<=day.startTime).toList();
+    if(actualList.isEmpty || nullList.isNotEmpty)
+    {showDialog(context: context, builder:(c)=>GeneralDialog(content: 'من فضلك اختر أوقات العمل بصورة صحيحة', toDOFunction: null));
+    return;}
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => ServiceProviderSignupScreen(daysList),
+        builder: (context) => ServiceProviderSignupScreen(
+            daysList.where((day) => day.status == 1).toList()),
       ),
     );
   }
 
-  Widget _buildDay(String title, Days day) {
     bool switchOn = false;
-    void _onSwitchChanged(bool value) {
+    void _onSwitchChanged(bool value, index) {
       setState(() {
         switchOn = !switchOn;
       });
       if (switchOn) {
         setState(() {
-          day.status = 1;
+          daysList[index].status = 1;
+        });
+      } else {
+        setState(() {
+          daysList[index].status = 0;
         });
       }
     }
 
-    void _selectTime(String type) async {
+    void _selectTime(String type, index) async {
       final TimeOfDay picked =
           await showTimePicker(context: context, initialTime: TimeOfDay.now());
       if (picked != null) {
         setState(() {
           type != 'start'
-              ? day.endTime = picked.hour
-              : day.startTime = picked.hour;
+              ? daysList[index].endTime = picked.hour ==0? 24 : picked.hour
+              : daysList[index].startTime = picked.hour ==0? 24: picked.hour;
         });
       }
     }
+  Widget _buildDay(index) {
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -74,7 +95,7 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            title,
+            daysNames[index],
             style: TextStyle(
               color: Color.fromRGBO(104, 57, 120, 10),
               fontSize: 18.0,
@@ -82,8 +103,8 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
             ),
           ),
           XlivSwitch(
-            value: switchOn,
-            onChanged: _onSwitchChanged,
+            value: daysList[index].status==1? true: false,
+            onChanged: (s)=>_onSwitchChanged(s,index),
             activeColor: Color.fromRGBO(104, 57, 120, 10),
             unActiveColor: Colors.grey[200],
           ),
@@ -96,7 +117,7 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _selectTime('start'),
+            onTap: () => _selectTime('start', index),
             child: Container(
               width: 50.0,
               height: 30.0,
@@ -112,7 +133,7 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
               ),
               child: Center(
                 child: Text(
-                  day.startTime.toString() + ':00',
+                  daysList[index].startTime == null?'-':daysList[index].startTime.toString() + ':00',
                   style: TextStyle(
                     color: Color.fromRGBO(104, 57, 120, 10),
                     fontSize: 12.0,
@@ -131,7 +152,7 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _selectTime('end'),
+            onTap: () => _selectTime('end', index),
             child: Container(
               width: 50.0,
               height: 30.0,
@@ -147,7 +168,7 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
               ),
               child: Center(
                 child: Text(
-                  day.endTime.toString() + ':00',
+                  daysList[index].endTime == null?'-': daysList[index].endTime.toString() + ':00',
                   style: TextStyle(
                     color: Color.fromRGBO(104, 57, 120, 10),
                     fontSize: 12.0,
@@ -160,6 +181,13 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    switchFlag = List.generate(daysList.length, (_) => false);
+    super.initState();
   }
 
   //-------------------------------build----------------------------------------
@@ -204,17 +232,20 @@ class _DaysSelectionScreenState extends State<DaysSelectionScreen> {
                     ],
                   ),
                   child: ListView(
-                    padding: EdgeInsets.only(top: 10.0, bottom: 25.0),
-                    children: <Widget>[
-                      _buildDay('السبت', daysList[0]),
-                      _buildDay('الاحد', daysList[1]),
-                      _buildDay('الاثنين', daysList[2]),
-                      _buildDay('الثلاثاء', daysList[3]),
-                      _buildDay('الاربعاء', daysList[4]),
-                      _buildDay('الخميس', daysList[5]),
-                      _buildDay('الجمعه', daysList[6]),
-                    ],
-                  ),
+                      padding: EdgeInsets.only(top: 10.0, bottom: 25.0),
+                      children: List.generate(daysList.length, (index) {
+                        return _buildDay(index);
+                      })
+                      // <Widget>[
+                      //   _buildDay('السبت', daysList[0]),
+                      //   _buildDay('الاحد', daysList[1]),
+                      //   _buildDay('الاثنين', daysList[2]),
+                      //   _buildDay('الثلاثاء', daysList[3]),
+                      //   _buildDay('الاربعاء', daysList[4]),
+                      //   _buildDay('الخميس', daysList[5]),
+                      //   _buildDay('الجمعه', daysList[6]),
+                      // ],
+                      ),
                 ),
                 Positioned(
                   bottom: 15.0,

@@ -7,6 +7,7 @@ import '../../widgets/textFieldEditingWidget.dart';
 import 'package:provider/provider.dart';
 import '../../providers/moreScreenProvider.dart';
 import '../../widgets/googleMaps.dart';
+import 'package:mashghal_co/map.dart';
 
 class EditInfoSPScreen extends StatefulWidget {
   // variable to ref screen name to routes in main.dart and Navigation
@@ -20,7 +21,7 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
   //-------------------------------variables------------------------------------
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File _image;
-  List<String> modelItems = ['صالون', 'منزلى'];
+  List<String> modelItems = ['salon', 'home'];
   LatLng latLng;
   double _lat, _long;
   bool _isLoading = false;
@@ -37,7 +38,7 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => GoogleMaps(),
+          builder: (context) => MapScreen((){}),
         ));
 
     setState(() {
@@ -48,6 +49,7 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
     });
   }
 
+  
   //----------------------------imageHandler------------------------------------
   void _imageSelection() {
     showModalBottomSheet(
@@ -151,7 +153,7 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
   }
 
   _openGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker. pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
     });
@@ -179,16 +181,11 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
     _confirmedPassword = value;
   }
 
-  void _onSavedServiceLocation(String type) {
-    if (type == 'صالون') {
-      setState(() {
-        _serviceType = 'salon';
-      });
-    } else {
-      setState(() {
-        _serviceType = 'home';
-      });
-    }
+  void _onSavedServiceLocation(type) {
+    setState(() {
+      _serviceType = type;
+    });
+    print('$_serviceType');
   }
 
   // ------------------------------validators-----------------------------------
@@ -231,32 +228,48 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
   }
 
   Widget _showDropDownList() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10.0,
-      ),
-      child: DropdownButton(
-        items: modelItems
-            .map(
-              (value) => DropdownMenuItem(
-                child: Text(value),
-                value: value,
-              ),
-            )
-            .toList(),
-        onChanged: _onSavedServiceLocation,
-        isExpanded: false,
-        hint: Text(
-          '  مكان تقديم الخدمة               ' + '' + _serviceType,
-          style: TextStyle(
-            color: Color.fromRGBO(104, 57, 120, 10),
-            fontSize: 14.0,
-            fontFamily: 'beINNormal',
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: Text(
+            'مكان تقديم الخدمة',
+            style: TextStyle(
+              color: Color.fromRGBO(104, 57, 120, 10),
+              fontSize: 14.0,
+              fontFamily: 'beINNormal',
+            ),
           ),
         ),
-        iconDisabledColor: Color.fromRGBO(104, 57, 120, 10),
-        iconEnabledColor: Color.fromRGBO(104, 57, 120, 10),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+          ),
+          child: DropdownButton(
+            value: _serviceType,
+            items: modelItems
+                .map(
+                  (value) => DropdownMenuItem(
+                    child: Text(value),
+                    value: value,
+                  ),
+                )
+                .toList(),
+            onChanged: _onSavedServiceLocation,
+            isExpanded: false,
+            hint: Text(
+              '  مكان تقديم الخدمة               ' + '' + _serviceType,
+              style: TextStyle(
+                color: Color.fromRGBO(104, 57, 120, 10),
+                fontSize: 14.0,
+                fontFamily: 'beINNormal',
+              ),
+            ),
+            iconDisabledColor: Color.fromRGBO(104, 57, 120, 10),
+            iconEnabledColor: Color.fromRGBO(104, 57, 120, 10),
+          ),
+        ),
+      ],
     );
   }
 
@@ -402,17 +415,28 @@ class _EditInfoSPScreenState extends State<EditInfoSPScreen> {
   }
 
   //-------------------------------build----------------------------------------
+  dynamic data;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
+  void didChangeDependencies() {
+    data = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     setState(() {
       _serviceType = data['service_type'];
       _lat = data['lat'];
       _long = data['long'];
       _address = data['address'];
     });
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

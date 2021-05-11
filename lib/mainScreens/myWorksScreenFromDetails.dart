@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mashghal_co/mainScreens/videoViewer.dart';
+import 'package:mashghal_co/widgets/generalAlertDialog.dart';
 import 'package:mashghal_co/widgets/loader.dart';
 import '../providers/homePageProvider.dart';
 import 'package:provider/provider.dart';
@@ -82,68 +84,127 @@ class MyWorksScreenFromDetails extends StatelessWidget {
                           ),
                           itemCount: works.advertiserWorks.data.works.length,
                           itemBuilder: (context, index) {
-                            return works.advertiserWorks.data.works[index].media
-                                        .contains('mp') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('WEBM') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('WMV') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('AVI') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('MOV') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('AVCHD') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('FLV') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('SWF') ||
-                                    works
-                                        .advertiserWorks.data.works[index].media
-                                        .contains('QT')
-                                ? GestureDetector(
-                                    onTap: () => _playVideo(
-                                        context,
-                                        works.advertiserWorks.data.works[index]
-                                            .media),
-                                    child: Container(
-                                      height: 70,
-                                      width: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            'assets/images/videoImage.png',
+                            final work =
+                                works.advertiserWorks.data.works[index];
+                            return Container(
+                              height: 70,
+                              width: 150,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onLongPress: () => {
+                                      HapticFeedback.vibrate(),
+                                      Provider.of<HomePage>(context)
+                                          .deleteWorks(work.id)
+                                          .then((_) => _onRefresh(context))
+                                    },
+                                    child: works.advertiserWorks.data
+                                                .works[index].media
+                                                .toLowerCase()
+                                                .contains('mp') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('WEBM') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('WMV') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('AVI') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('MOV') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('AVCHD') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('FLV') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('SWF') ||
+                                            works.advertiserWorks.data
+                                                .works[index].media
+                                                .toUpperCase()
+                                                .contains('QT')
+                                        ? GestureDetector(
+                                            onTap: () => _playVideo(
+                                                context,
+                                                works.advertiserWorks.data
+                                                    .works[index].media),
+                                            child: Container(
+                                              height: 70,
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    'assets/images/videoImage.png',
+                                                  ),
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Container(
+                                            height: 70,
+                                            width: 150,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              color: Colors.grey[100],
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                  'https://mashghllkw.com/cdn/' +
+                                                      works.advertiserWorks.data
+                                                          .works[index].media,
+                                                ),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
                                           ),
-                                          fit: BoxFit.contain,
-                                        ),
+                                  ),
+                                  Align(
+                                    alignment: FractionalOffset(1.2, -.20),
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red[700],
                                       ),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (contxt) => GeneralDialog(
+                                            content: 'هل تريد مسح العمل؟',
+                                            toDOFunction: () {
+                                              
+                                                  HapticFeedback.vibrate();
+                                                  Provider.of<HomePage>(context)
+                                                      .deleteWorks(work.id)
+                                                      .then(
+                                                        (_) =>  _onRefresh(
+                                                              context));
+                                                        
+                                               
+                                            },
+                                          ),
+                                        );
+                                      },
                                     ),
                                   )
-                                : Container(
-                                    height: 70,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      color: Colors.grey[100],
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          'https://mashghllkw.com/cdn/' +
-                                              works.advertiserWorks.data
-                                                  .works[index].media,
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  );
+                                ],
+                              ),
+                            );
                           },
                         ),
                       ),
